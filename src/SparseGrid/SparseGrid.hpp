@@ -446,6 +446,43 @@ inline Vc_type load_mask(unsigned char * mask_sum)
 	return v;
 }
 
+template<typename T,typename aggr>
+struct set_bck
+{
+	template<unsigned int p, typename chunks_type>
+	static void set(const T & val, chunks_type & chunks, unsigned int i)
+	{
+		meta_copy<typename boost::mpl::at<typename aggr::type,boost::mpl::int_<p>>::type>::meta_copy_(val,chunks.get(0).template get<p>()[i]);
+	}
+};
+
+template<typename T, unsigned int N1, typename aggr>
+struct set_bck<T[N1],aggr>
+{
+	template<unsigned int p, typename chunks_type>
+	static void set(const T (& val)[N1], chunks_type & chunks, unsigned int i)
+	{
+		for (int i1 = 0 ; i1 < N1; i1++)
+		{meta_copy<T>::meta_copy_(val[i1],chunks.get(0).template get<p>()[i1][i]);}
+	}
+};
+
+template<typename T, unsigned int N1, unsigned int N2, typename aggr>
+struct set_bck<T[N1][N2],aggr>
+{
+	template<unsigned int p, typename chunks_type>
+	static void set(const T (& val)[N1][N2], chunks_type & chunks, unsigned int i)
+	{
+		for (int i1 = 0 ; i1 < N1; i1++)
+		{
+			for (int i2 = 0 ; i2 < N2; i2++)
+			{
+				meta_copy<T>::meta_copy_(val[i1][i2],chunks.get(0).template get<p>()[i1][i2][i]);
+			}
+		}
+	}
+};
+
 template<unsigned int dim,
 		 typename T,
 		 typename S,
@@ -974,7 +1011,10 @@ public:
 	void setBackgroundValue(const typename boost::mpl::at<typename T::type,boost::mpl::int_<p>>::type & val)
 	{
 		for (int i = 0 ; i < chunking::size::value ; i++)
-		{meta_copy<typename boost::mpl::at<typename T::type,boost::mpl::int_<p>>::type>::meta_copy_(val,chunks.get(0).template get<p>()[i]);}
+		{
+			set_bck<typename boost::mpl::at<typename T::type,boost::mpl::int_<p>>::type,T>::template set<p>(val,chunks,i);
+			//meta_copy<typename boost::mpl::at<typename T::type,boost::mpl::int_<p>>::type>::meta_copy_(val,chunks.get(0).template get<p>()[i]);
+		}
 	}
 
 	/*! \brief Get the background value

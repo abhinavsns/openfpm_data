@@ -616,6 +616,7 @@ __global__ void test_se1_crash_gt3(grid_type gt1, grid_type gt2)
 	gt1.template get<2>(k)[2][2] = 6.0;
 }
 
+// DEBUG ERROR HERE
 BOOST_AUTO_TEST_CASE (gpu_grid_test_se_class1)
 {
 #if defined(SE_CLASS1) && !defined(__clang__)
