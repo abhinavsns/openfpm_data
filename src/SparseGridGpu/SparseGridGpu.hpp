@@ -2682,6 +2682,51 @@ public:
 		applyStencils< SparseGridGpuKernels::stencil_func_conv2<dim,nLoop,prop_src1,prop_src2,prop_dst1,prop_dst2,stencil_size> >(box,STENCIL_MODE_INPLACE,func, args ...);
 	}
 
+
+	/*! \brief Apply a free type convolution
+	 *
+	 *
+	 */
+	template<unsigned int prop_src1, unsigned int prop_src2, unsigned int prop_src3,
+	         unsigned int prop_dst1, unsigned int prop_dst2, unsigned int prop_dst3,
+	         unsigned int stencil_size, typename lambda_f, typename ... ArgsT >
+	void conv3(grid_key_dx<dim> start, grid_key_dx<dim> stop, lambda_f func, ArgsT ... args)
+	{
+	    Box<dim,int> box;
+
+	    for (int i = 0 ; i < dim ; i++)
+	    {
+	        box.setLow(i,start.get(i));
+	        box.setHigh(i,stop.get(i));
+	    }
+
+	    constexpr unsigned int nLoop = UIntDivCeil<(IntPow<blockEdgeSize + 2, dim>::value), (blockSize)>::value;
+
+	    applyStencils< SparseGridGpuKernels::stencil_func_conv3<dim,nLoop,prop_src1,prop_src2,prop_src3,prop_dst1,prop_dst2,prop_dst3,stencil_size> >(box,STENCIL_MODE_INPLACE,func, args ...);
+	}
+
+
+	/*! \brief Apply a free type convolution with 4 inputs and 3 outputs
+	 *
+	 *
+	 */
+	template<unsigned int prop_src1, unsigned int prop_src2, unsigned int prop_src3, unsigned int prop_src4,
+	         unsigned int prop_dst1, unsigned int prop_dst2, unsigned int prop_dst3, unsigned int prop_dst4,
+	         unsigned int stencil_size, typename lambda_f, typename ... ArgsT >
+	void conv4(grid_key_dx<dim> start, grid_key_dx<dim> stop, lambda_f func, ArgsT ... args)
+	{
+	    Box<dim,int> box;
+
+	    for (int i = 0 ; i < dim ; i++)
+	    {
+	        box.setLow(i,start.get(i));
+	        box.setHigh(i,stop.get(i));
+	    }
+
+	    constexpr unsigned int nLoop = UIntDivCeil<(IntPow<blockEdgeSize + 2, dim>::value), (blockSize)>::value;
+
+	    applyStencils< SparseGridGpuKernels::stencil_func_conv4<dim,nLoop,prop_src1,prop_src2,prop_src3,prop_src4,prop_dst1,prop_dst2,prop_dst3,prop_src4,stencil_size> >(box,STENCIL_MODE_INPLACE,func, args ...);
+	}
 	/*! \brief Return a Box with the  range if the SparseGrid
 	 *
 	 * \return the range of the grid
