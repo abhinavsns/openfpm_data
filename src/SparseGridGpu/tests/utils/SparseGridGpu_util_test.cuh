@@ -388,7 +388,7 @@ struct Conv3x3x3
 
         __shared__ ScalarT enlargedBlock[enlargedBlockSize];
 
-        sparseGrid.loadGhostBlock<p_src>(dataBlockLoad,dataBlockIdPos,enlargedBlock);
+        sparseGrid.template loadGhostBlock<p_src>(dataBlockLoad,dataBlockIdPos,enlargedBlock);
 
         __syncthreads();
 
@@ -860,7 +860,7 @@ struct SkeletonStencil
                 SparseGridT::getBlockEdgeSize() + 2 * supportRadius, dim>::value;
 
         __shared__ ScalarT enlargedBlock[enlargedBlockSize];
-        sparseGrid.loadGhostBlock<p_src>(dataBlockLoad, dataBlockIdPos, enlargedBlock);
+        sparseGrid.template loadGhostBlock<p_src>(dataBlockLoad, dataBlockIdPos, enlargedBlock);
 
         __syncthreads();
 
@@ -880,7 +880,7 @@ struct SkeletonStencil
             enlargedBlock[linId] = res;
         }
         __syncthreads();
-        sparseGrid.storeBlock<p_dst>(dataBlockStore, enlargedBlock);
+        sparseGrid.template storeBlock<p_dst>(dataBlockStore, enlargedBlock);
     }
 
     /*! \brief Stencil Host function

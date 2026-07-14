@@ -491,7 +491,7 @@ BOOST_AUTO_TEST_CASE(testStencilHeat)
 	sparseGrid.findNeighbours(); // Pre-compute the neighbours pos for each block!
 	sparseGrid.tagBoundaries(gpuContext);
 
-    sparseGrid.template applyStencils<BoundaryStencilSetXRescaled<dim,0,0>>(sparseGrid.getBox(),STENCIL_MODE_INPLACE,0.0 ,gridSize.x * blockEdgeSize, 0.0, 10.0);
+    sparseGrid.template applyStencils<BoundaryStencilSetXRescaled<dim,0,0>>(sparseGrid.getBox(),STENCIL_MODE_INPLACE,0.0f ,gridSize.x * blockEdgeSize, 0.0f, 10.0f);
 
         // Now apply the laplacian operator
 	const unsigned int maxIter = 1000;
@@ -540,7 +540,7 @@ BOOST_AUTO_TEST_CASE(testStencil_lap_simplified)
 	sparseGrid.findNeighbours(); // Pre-compute the neighbours pos for each block!
 	sparseGrid.tagBoundaries(gpuContext);
 
-    sparseGrid.template applyStencils<BoundaryStencilSetXRescaled<dim,0,0>>(sparseGrid.getBox(),STENCIL_MODE_INPLACE,0.0 ,gridSize.x * blockEdgeSize, 0.0, 10.0);
+    sparseGrid.template applyStencils<BoundaryStencilSetXRescaled<dim,0,0>>(sparseGrid.getBox(),STENCIL_MODE_INPLACE,0.0f ,gridSize.x * blockEdgeSize, 0.0f, 10.0f);
 
         // Now apply the laplacian operator
 	const unsigned int maxIter = 1000;
@@ -549,11 +549,11 @@ BOOST_AUTO_TEST_CASE(testStencil_lap_simplified)
 	{
 		sparseGrid.conv_cross<0, 1, 1>({0,0},{16,16},[] __device__ (float & u, cross_stencil<2,float> & cs){
 			return u + (cs.xm[0] + cs.xp[0] +
-			       cs.xm[1] + cs.xp[1] - 4.0*u)*0.1;
+			       cs.xm[1] + cs.xp[1] - 4.0f*u)*0.1f;
 		});
         sparseGrid.conv_cross<1, 0, 1>({0,0},{16,16},[] __device__ (float & u, cross_stencil<2,float> & cs){
 			return u + (cs.xm[0] + cs.xp[0] +
-			       cs.xm[1] + cs.xp[1] - 4.0*u)*0.1;
+			       cs.xm[1] + cs.xp[1] - 4.0f*u)*0.1f;
         });
 	}
 
@@ -567,7 +567,7 @@ BOOST_AUTO_TEST_CASE(testStencil_lap_simplified)
 	for (size_t i = 0; i < 64*4; i++)
 	{
 		auto coord = sparseGrid.getCoord(i);
-		float expectedValue = 10.0 * coord.get(0) / (gridSize.x * blockEdgeSize - 1);
+		float expectedValue = 10.0f * coord.get(0) / (gridSize.x * blockEdgeSize - 1);
 
 		match &= fabs(sparseGrid.template get<0>(coord) - expectedValue) < 1e-2;
 	}
