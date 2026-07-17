@@ -20,7 +20,7 @@ if (TEST_PERFORMANCE)
 endif ()
 
 
-if (NOT CUDA_ON_BACKEND STREQUAL "None")
+if (NOT CUDA_ON_BACKEND STREQUAL "NONE")
 	set(CUDA_SOURCES ${CUDA_SOURCES}
 	    Vector/map_vector_sparse_unit_tests.cu
             Vector/vector_gpu_unit_tests.cu
