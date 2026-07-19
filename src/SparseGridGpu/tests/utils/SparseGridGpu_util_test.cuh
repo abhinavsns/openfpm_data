@@ -254,7 +254,8 @@ struct HeatStencil
             // const auto linId = sparseGrid.getLinIdInEnlargedBlock(offset);
             linId = sparseGrid.getLinIdInEnlargedBlock(offset);
             ScalarT cur = enlargedBlock[linId];
-            ScalarT laplacian = -2.0 * dim * cur; // The central part of the stencil
+            ScalarT laplacian = static_cast<ScalarT>(-2) *
+                static_cast<ScalarT>(dim) * cur; // The central part of the stencil
 
             for (int d = 0; d < dim; ++d)
             {
